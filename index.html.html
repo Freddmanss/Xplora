@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1A2C4E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Checklist Visita XPLORA</title>
+<style>
+  :root {
+    --navy: #1A2C4E;
+    --teal: #0D7377;
+    --teal-l: #E1F5EE;
+    --teal-m: #5DCAA5;
+    --red: #D85A30;
+    --red-l: #FAECE7;
+    --red-d: #712B13;
+    --amber: #BA7517;
+    --amber-l: #FAEEDA;
+    --green: #3B6D11;
+    --green-l: #EAF3DE;
+    --gray: #5F5E5A;
+    --gray-l: #F4F3EF;
+    --gray-m: #D3D1C7;
+    --border: #E0DED7;
+    --white: #ffffff;
+    --text: #1A1A1A;
+    --text-s: #5F5E5A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: #F4F3EF;
+    color: var(--text);
+    font-size: 15px;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  .header {
+    background: var(--navy);
+    padding: 20px 16px 16px;
+    position: relative;
+  }
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .header-icon {
+    width: 36px; height: 36px;
+    background: var(--teal);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .header-brand { font-size: 11px; font-weight: 600; color: #B5D4F4; letter-spacing: 1px; text-transform: uppercase; }
+  .header-title { font-size: 20px; font-weight: 700; color: #fff; line-height: 1.2; }
+  .header-sub { font-size: 12px; color: #B5D4F4; margin-top: 4px; }
+
+  .progress-wrap { background: var(--navy); padding: 0 16px 16px; }
+  .progress-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+  .progress-label { font-size: 12px; color: #B5D4F4; }
+  .progress-bar { height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--teal-m); border-radius: 2px; transition: width .3s; width: 0%; }
+
+  .container { padding: 14px 12px 0; max-width: 480px; margin: 0 auto; }
+
+  .section { margin-bottom: 10px; }
+  .section-title {
+    font-size: 10px; font-weight: 700; color: var(--text-s);
+    text-transform: uppercase; letter-spacing: .8px;
+    padding: 0 4px; margin-bottom: 6px;
+  }
+
+  .card {
+    background: var(--white);
+    border-radius: 14px;
+    overflow: hidden;
+    border: 0.5px solid var(--border);
+  }
+
+  .field { border-bottom: 0.5px solid var(--gray-l); }
+  .field:last-child { border-bottom: none; }
+
+  .field-row {
+    display: flex; align-items: center;
+    gap: 12px; padding: 11px 14px;
+    min-height: 52px;
+  }
+  .field-ic { font-size: 20px; flex-shrink: 0; width: 24px; text-align: center; }
+  .field-text { flex: 1; min-width: 0; }
+  .field-label { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.3; }
+  .field-sub { font-size: 11px; color: var(--text-s); margin-top: 2px; line-height: 1.3; }
+
+  input[type="text"], input[type="date"] {
+    border: none; outline: none;
+    background: transparent;
+    font-size: 14px; color: var(--text);
+    text-align: right; width: 100%;
+    font-family: inherit;
+  }
+  input::placeholder { color: var(--gray-m); }
+  input[type="date"]::-webkit-calendar-picker-indicator { opacity: 0.4; }
+
+  .yn-group { display: flex; gap: 6px; flex-shrink: 0; }
+  .yn-btn {
+    padding: 5px 13px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-s);
+    cursor: pointer;
+    transition: all .15s;
+    -webkit-appearance: none;
+  }
+  .yn-btn.si.on { background: var(--green-l); border-color: #639922; color: var(--green); }
+  .yn-btn.no.on { background: var(--red-l); border-color: var(--red); color: var(--red-d); }
+
+  .inc-wrap { display: none; padding: 0 14px 10px 50px; }
+  .inc-wrap.show { display: block; }
+  .inc-wrap textarea {
+    width: 100%; border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px;
+    font-size: 13px; font-family: inherit;
+    color: var(--text); resize: none;
+    background: var(--gray-l);
+    outline: none; line-height: 1.5;
+  }
+  .inc-wrap textarea:focus { border-color: var(--teal); background: var(--white); }
+
+  .alert-row {
+    background: var(--amber-l);
+    border-left: 3px solid var(--amber);
+    padding: 8px 12px;
+    font-size: 12px; color: #633806;
+    line-height: 1.4;
+  }
+
+  .imei-input {
+    font-size: 13px !important;
+    text-align: right !important;
+    max-width: 170px;
+    color: var(--text) !important;
+  }
+
+  .obs-area {
+    padding: 10px 14px 12px;
+    border-top: 0.5px solid var(--gray-l);
+  }
+  .obs-area textarea {
+    width: 100%; border: none; outline: none;
+    background: transparent; resize: none;
+    font-size: 13px; font-family: inherit;
+    color: var(--text); line-height: 1.6;
+  }
+  .obs-area textarea::placeholder { color: var(--gray-m); }
+
+  .generate-btn {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; width: 100%;
+    background: var(--teal);
+    color: white; border: none;
+    border-radius: 14px; padding: 15px;
+    font-size: 16px; font-weight: 600;
+    cursor: pointer; margin-top: 14px;
+    letter-spacing: .2px;
+    transition: opacity .15s;
+  }
+  .generate-btn:active { opacity: .85; }
+
+  .output-box {
+    display: none;
+    background: var(--white);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .output-box.show { display: block; }
+  .output-header {
+    background: #25D366;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .output-header span { font-size: 13px; font-weight: 600; color: white; }
+  .output-txt {
+    padding: 14px;
+    font-size: 13px; font-family: 'Courier New', monospace;
+    white-space: pre-wrap; line-height: 1.6;
+    color: var(--text);
+    border-bottom: 0.5px solid var(--gray-l);
+  }
+  .action-row { display: flex; gap: 8px; padding: 10px 12px; }
+  .action-btn {
+    flex: 1; padding: 11px;
+    border-radius: 10px; border: 1px solid var(--border);
+    background: transparent;
+    font-size: 13px; font-weight: 500;
+    color: var(--text); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all .15s;
+  }
+  .action-btn:active { opacity: .7; }
+  .action-btn.primary {
+    background: #25D366; border-color: #25D366; color: white;
+  }
+
+  .result-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 20px;
+    font-size: 13px; font-weight: 600;
+    margin: 0 12px 12px;
+  }
+  .result-ok { background: var(--green-l); color: var(--green); }
+  .result-inc { background: var(--amber-l); color: var(--amber); }
+  .result-pend { background: var(--gray-l); color: var(--gray); }
+
+  .footer-note {
+    text-align: center; font-size: 11px; color: var(--text-s);
+    padding: 16px 12px 0; line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">
+    <div class="header-icon">⌚</div>
+    <div>
+      <div class="header-brand">Servicios de Campo · ICP</div>
+      <div class="header-title">Checklist visita XPLORA</div>
+    </div>
+  </div>
+  <div class="header-sub">Media Markt · Lineal Smartwatches</div>
+</div>
+<div class="progress-wrap">
+  <div class="progress-row">
+    <span class="progress-label" id="prog-txt">0 de 9 completados</span>
+    <span class="progress-label" id="prog-pct">0%</span>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-title">Datos de la visita</div>
+    <div class="card">
+      <div class="field">
+        <div class="field-row">
+          <div class="field-ic">🏪</div>
+          <div class="field-text"><div class="field-label">Tienda MM</div></div>
+          <input type="text" id="tienda" placeholder="Nombre / ciudad">
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-row">
+          <div class="field-ic">👤</div>
+          <div class="field-text"><div class="field-label">GPV</div></div>
+          <input type="text" id="gpv" placeholder="Tu nombre">
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-row">
+          <div class="field-ic">📅</div>
+          <div class="field-text"><div class="field-label">Fecha</div></div>
+          <input type="date" id="fecha">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Pasos previos</div>
+    <div class="card">
+
+      <div class="field" id="f-acceso">
+        <div class="field-row">
+          <div class="field-ic">🔑</div>
+          <div class="field-text">
+            <div class="field-label">Responsable de Telefonía localizado</div>
+            <div class="field-sub">Te ha llevado al lineal y confirmado posición</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('acceso','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('acceso','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-acceso">
+          <textarea rows="2" placeholder="Incidencia con el acceso..."></textarea>
+        </div>
+      </div>
+
+      <div class="field" id="f-posicion">
+        <div class="field-row">
+          <div class="field-ic">📍</div>
+          <div class="field-text">
+            <div class="field-label">Posición de implantación confirmada</div>
+            <div class="field-sub">MM ha dado OK a la posición asignada</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('posicion','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('posicion','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-posicion">
+          <textarea rows="2" id="txt-posicion" placeholder="¿Qué posición os han indicado? Anota el código..."></textarea>
+        </div>
+      </div>
+
+      <div class="field" id="f-antiguo">
+        <div class="field-row">
+          <div class="field-ic">🔄</div>
+          <div class="field-text">
+            <div class="field-label">Había XPLORA antiguo expuesto</div>
+            <div class="field-sub">Si había, MM lo ha retirado — foto hecha</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('antiguo','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('antiguo','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-antiguo">
+          <textarea rows="2" id="txt-antiguo" placeholder="¿Qué modelos había? ¿MM los ha retirado?"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Instalación</div>
+    <div class="card">
+
+      <div class="field" id="f-relojes">
+        <div class="field-row">
+          <div class="field-ic">⌚</div>
+          <div class="field-text">
+            <div class="field-label">2 relojes instalados y encendidos</div>
+            <div class="field-sub">Pantalla en MENÚ visible en ambos</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('relojes','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('relojes','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-relojes">
+          <textarea rows="2" placeholder="Describe el problema con el encendido..."></textarea>
+        </div>
+      </div>
+
+      <div class="field" id="f-alarmas">
+        <div class="field-row">
+          <div class="field-ic">🔒</div>
+          <div class="field-text">
+            <div class="field-label">2 alarmados instalados correctamente</div>
+            <div class="field-sub">Hebilla apretada, conexión y carga OK</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('alarmas','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('alarmas','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-alarmas">
+          <textarea rows="2" placeholder="¿Qué problema hay con la alarma?"></textarea>
+        </div>
+      </div>
+
+      <div class="field" id="f-cartel">
+        <div class="field-row">
+          <div class="field-ic">🪧</div>
+          <div class="field-text">
+            <div class="field-label">Cartel PVC colocado y centrado</div>
+            <div class="field-sub">Cortado limpio, fijado con cinta doble cara</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('cartel','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('cartel','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-cartel">
+          <textarea rows="2" placeholder="¿Qué ha pasado con el cartel?"></textarea>
+        </div>
+      </div>
+
+      <div class="field" id="f-cartelas">
+        <div class="field-row">
+          <div class="field-ic">🏷️</div>
+          <div class="field-text">
+            <div class="field-label">Cartelas rojas colocadas</div>
+            <div class="field-sub">O entregadas a MM si no había espacio</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('cartelas','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('cartelas','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-cartelas">
+          <textarea rows="2" placeholder="¿Se han entregado a MM o hay otro problema?"></textarea>
+        </div>
+      </div>
+
+      <div class="field" id="f-precios">
+        <div class="field-row">
+          <div class="field-ic">💶</div>
+          <div class="field-text">
+            <div class="field-label">Etiquetas de precio solicitadas a MM</div>
+            <div class="field-sub">MM las ha colocado o queda pendiente</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('precios','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('precios','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-precios">
+          <textarea rows="2" placeholder="¿Estaban pendientes? ¿Han dicho cuándo?"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Cierre y evidencias</div>
+    <div class="card">
+
+      <div class="field">
+        <div class="field-row">
+          <div class="field-ic">📶</div>
+          <div class="field-text">
+            <div class="field-label">IMEIs de los relojes instalados</div>
+            <div class="field-sub">Anotar ambos</div>
+          </div>
+        </div>
+        <div style="padding: 0 14px 10px 50px; display:flex; gap:8px;">
+          <input type="text" id="imei1" placeholder="IMEI reloj 1"
+            style="flex:1; border:1px solid var(--border); border-radius:8px; padding:7px 10px; font-size:13px; background:var(--gray-l); outline:none;" oninput="updateProgress()">
+          <input type="text" id="imei2" placeholder="IMEI reloj 2"
+            style="flex:1; border:1px solid var(--border); border-radius:8px; padding:7px 10px; font-size:13px; background:var(--gray-l); outline:none;" oninput="updateProgress()">
+        </div>
+      </div>
+
+      <div class="field" id="f-albaran">
+        <div class="field-row">
+          <div class="field-ic">✍️</div>
+          <div class="field-text">
+            <div class="field-label">Albarán firmado</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('albaran','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('albaran','no',this)">No</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field" id="f-fotos">
+        <div class="field-row">
+          <div class="field-ic">📸</div>
+          <div class="field-text">
+            <div class="field-label">Fotos y vídeo realizados</div>
+            <div class="field-sub">Lineal general + cerca de cada reloj + vídeo</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('fotos','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('fotos','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-fotos">
+          <textarea rows="2" placeholder="¿Qué falta por fotografiar?"></textarea>
+        </div>
+      </div>
+
+      <div class="field" id="f-herramientas">
+        <div class="field-row">
+          <div class="field-ic">🧰</div>
+          <div class="field-text">
+            <div class="field-label">Herramientas recogidas</div>
+            <div class="field-sub">Nada dejado en tienda</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('herramientas','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('herramientas','no',this)">No</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-row" style="align-items:flex-start;padding-bottom:0">
+          <div class="field-ic" style="margin-top:2px">📝</div>
+          <div class="field-text"><div class="field-label">Observaciones</div></div>
+        </div>
+        <div class="obs-area">
+          <textarea id="obs" rows="3" placeholder="Cualquier nota adicional para el coordinador..."></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="generate-btn" onclick="generate()">
+    <span style="font-size:20px">💬</span>
+    Generar mensaje WhatsApp
+  </button>
+
+  <div class="output-box" id="output-box">
+    <div class="output-header">
+      <span style="font-size:18px">💬</span>
+      <span>Mensaje listo para enviar</span>
+    </div>
+    <div id="result-badge-wrap"></div>
+    <div class="output-txt" id="output-txt"></div>
+    <div class="action-row">
+      <button class="action-btn" id="copy-btn" onclick="copyMsg()">
+        <span>📋</span> Copiar
+      </button>
+      <button class="action-btn primary" onclick="shareWA()">
+        <span>💬</span> Abrir WhatsApp
+      </button>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Servicio de Campo · ICP · Campaña XPLORA Lineal Smartwatches MM · v2.0
+  </div>
+
+</div>
+
+<script>
+const S = {};
+const TRACKED = ['acceso','posicion','antiguo','relojes','alarmas','cartel','cartelas','precios','albaran','fotos','herramientas'];
+
+function yn(key, val, btn) {
+  S[key] = val;
+  const parent = btn.closest('.field');
+  parent.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  const inc = document.getElementById('inc-'+key);
+  if (inc) inc.classList.toggle('show', val === 'no');
+  updateProgress();
+}
+
+function updateProgress() {
+  const filled = TRACKED.filter(k => S[k]).length;
+  const imei1 = document.getElementById('imei1').value.trim();
+  const imei2 = document.getElementById('imei2').value.trim();
+  const imeiDone = (imei1 || imei2) ? 1 : 0;
+  const total = TRACKED.length - 2; // acceso and herramientas don't count for required
+  const done = TRACKED.filter(k => S[k]).length + imeiDone;
+  const pct = Math.round(Math.min(done, 9) / 9 * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-txt').textContent = Math.min(done,9) + ' de 9 completados';
+  document.getElementById('prog-pct').textContent = pct + '%';
+}
+
+function getFieldText(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function fmtDate(val) {
+  if (!val) return new Date().toLocaleDateString('es-ES');
+  const d = new Date(val + 'T12:00:00');
+  return d.toLocaleDateString('es-ES', {day:'2-digit',month:'2-digit',year:'numeric'});
+}
+
+function ic(key) {
+  return S[key] === 'si' ? '✅' : S[key] === 'no' ? '❌' : '⬜';
+}
+
+function note(incId, txtId) {
+  const wrap = document.getElementById(incId);
+  if (!wrap || !wrap.classList.contains('show')) return '';
+  const ta = wrap.querySelector('textarea') || document.getElementById(txtId);
+  const v = ta ? ta.value.trim() : '';
+  return v ? '\n   ↳ _' + v + '_' : '';
+}
+
+function generate() {
+  const tienda = document.getElementById('tienda').value.trim() || '(sin especificar)';
+  const gpv = document.getElementById('gpv').value.trim() || '(sin especificar)';
+  const fecha = fmtDate(document.getElementById('fecha').value);
+  const imei1 = document.getElementById('imei1').value.trim();
+  const imei2 = document.getElementById('imei2').value.trim();
+  const obs = getFieldText('obs');
+
+  const hasNos = TRACKED.some(k => S[k] === 'no');
+  const allOk = ['relojes','alarmas','cartel','cartelas','albaran','fotos'].every(k => S[k] === 'si') && (imei1 || imei2);
+
+  let msg = '';
+  msg += `*INFORME VISITA XPLORA* ⌚\n`;
+  msg += `━━━━━━━━━━━━━━━━━━\n`;
+  msg += `🏪 *Tienda:* ${tienda}\n`;
+  msg += `👤 *GPV:* ${gpv}\n`;
+  msg += `📅 *Fecha:* ${fecha}\n`;
+  msg += `━━━━━━━━━━━━━━━━━━\n\n`;
+
+  msg += `*PASOS PREVIOS*\n`;
+  msg += `${ic('acceso')} Responsable Telefonía localizado${note('inc-acceso')}\n`;
+  msg += `${ic('posicion')} Posición confirmada por MM${note('inc-posicion','txt-posicion')}\n`;
+  msg += `${ic('antiguo')} XPLORA antiguo gestionado${note('inc-antiguo','txt-antiguo')}\n\n`;
+
+  msg += `*INSTALACIÓN*\n`;
+  msg += `${ic('relojes')} 2 relojes instalados en MENÚ${note('inc-relojes')}\n`;
+  msg += `${ic('alarmas')} 2 alarmados OK (hebilla + carga)${note('inc-alarmas')}\n`;
+  msg += `${ic('cartel')} Cartel PVC colocado y centrado${note('inc-cartel')}\n`;
+  msg += `${ic('cartelas')} Cartelas rojas OK${note('inc-cartelas')}\n`;
+  msg += `${ic('precios')} Etiquetas de precio solicitadas${note('inc-precios')}\n\n`;
+
+  msg += `*CIERRE*\n`;
+  const imeiStr = [imei1, imei2].filter(Boolean).join(' / ');
+  msg += `${imeiStr ? '✅' : '⬜'} IMEIs: ${imeiStr || 'pendiente'}\n`;
+  msg += `${ic('albaran')} Albarán firmado\n`;
+  msg += `${ic('fotos')} Fotos y vídeo realizados${note('inc-fotos')}\n`;
+  msg += `${ic('herramientas')} Herramientas recogidas\n`;
+
+  if (obs) {
+    msg += `\n*OBSERVACIONES*\n${obs}\n`;
+  }
+
+  msg += `\n━━━━━━━━━━━━━━━━━━\n`;
+  if (allOk && !hasNos) {
+    msg += `✅ *VISITA COMPLETADA SIN INCIDENCIAS*`;
+  } else if (hasNos) {
+    msg += `⚠️ *VISITA CON INCIDENCIAS — revisar arriba*`;
+  } else {
+    msg += `⬜ *VISITA INCOMPLETA — faltan datos*`;
+  }
+
+  document.getElementById('output-txt').textContent = msg;
+
+  const badgeWrap = document.getElementById('result-badge-wrap');
+  let badgeClass = allOk && !hasNos ? 'result-ok' : hasNos ? 'result-inc' : 'result-pend';
+  let badgeText = allOk && !hasNos ? '✅ Completada sin incidencias' : hasNos ? '⚠️ Con incidencias' : '⬜ Incompleta';
+  badgeWrap.innerHTML = `<div class="result-badge ${badgeClass}" style="margin-top:10px">${badgeText}</div>`;
+
+  const box = document.getElementById('output-box');
+  box.classList.add('show');
+  document.getElementById('copy-btn').textContent = '📋 Copiar';
+  setTimeout(() => box.scrollIntoView({behavior:'smooth', block:'start'}), 100);
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.top = '-9999px';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  ta.setSelectionRange(0, ta.value.length);
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+async function copyMsg() {
+  const t = document.getElementById('output-txt').textContent;
+  let ok = false;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(t);
+      ok = true;
+    }
+  } catch (e) { ok = false; }
+  if (!ok) ok = fallbackCopy(t);
+  document.getElementById('copy-btn').textContent = ok ? '✅ Copiado' : '⚠️ Copia manual';
+}
+
+function shareWA() {
+  const t = document.getElementById('output-txt').textContent;
+  const encoded = encodeURIComponent(t);
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+  // En móvil intenta abrir la app nativa. Si no responde, cae a WhatsApp Web/wa.me.
+  if (isMobile) {
+    window.location.href = 'whatsapp://send?text=' + encoded;
+    setTimeout(() => {
+      window.location.href = 'https://wa.me/?text=' + encoded;
+    }, 900);
+  } else {
+    window.open('https://web.whatsapp.com/send?text=' + encoded, '_blank');
+  }
+}
+
+document.getElementById('fecha').valueAsDate = new Date();
+</script>
+</body>
+</html>
