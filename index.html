@@ -241,7 +241,7 @@
 </div>
 <div class="progress-wrap">
   <div class="progress-row">
-    <span class="progress-label" id="prog-txt">0 de 9 completados</span>
+    <span class="progress-label" id="prog-txt">0 de 14 completados</span>
     <span class="progress-label" id="prog-pct">0%</span>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
@@ -252,6 +252,13 @@
   <div class="section">
     <div class="section-title">Datos de la visita</div>
     <div class="card">
+      <div class="field">
+        <div class="field-row">
+          <div class="field-ic">📋</div>
+          <div class="field-text"><div class="field-label">OS</div></div>
+          <input type="text" id="os" placeholder="Orden de Servicio">
+        </div>
+      </div>
       <div class="field">
         <div class="field-row">
           <div class="field-ic">🏪</div>
@@ -301,8 +308,8 @@
         <div class="field-row">
           <div class="field-ic">📍</div>
           <div class="field-text">
-            <div class="field-label">Posición de implantación confirmada</div>
-            <div class="field-sub">MM ha dado OK a la posición asignada</div>
+            <div class="field-label">Posición según planograma</div>
+            <div class="field-sub">MM confirma misma posición que planograma</div>
           </div>
           <div class="yn-group">
             <button class="yn-btn si" onclick="yn('posicion','si',this)">Sí</button>
@@ -310,7 +317,7 @@
           </div>
         </div>
         <div class="inc-wrap" id="inc-posicion">
-          <textarea rows="2" id="txt-posicion" placeholder="¿Qué posición os han indicado? Anota el código..."></textarea>
+          <textarea rows="2" id="txt-posicion" placeholder="¿Qué posición indica MM y nombre responsable MM?"></textarea>
         </div>
       </div>
 
@@ -318,8 +325,8 @@
         <div class="field-row">
           <div class="field-ic">🔄</div>
           <div class="field-text">
-            <div class="field-label">Había XPLORA antiguo expuesto</div>
-            <div class="field-sub">Si había, MM lo ha retirado — foto hecha</div>
+            <div class="field-label">Solo hay expuestos 2 relojes Xplora</div>
+            <div class="field-sub">En caso de haber más, solicitar a MM retirarlos - Foto evidencia</div>
           </div>
           <div class="yn-group">
             <button class="yn-btn si" onclick="yn('antiguo','si',this)">Sí</button>
@@ -327,7 +334,7 @@
           </div>
         </div>
         <div class="inc-wrap" id="inc-antiguo">
-          <textarea rows="2" id="txt-antiguo" placeholder="¿Qué modelos había? ¿MM los ha retirado?"></textarea>
+          <textarea rows="2" id="txt-antiguo" placeholder="¿Qué modelo había? ¿MM los ha retirado?"></textarea>
         </div>
       </div>
 
@@ -337,6 +344,23 @@
   <div class="section">
     <div class="section-title">Instalación</div>
     <div class="card">
+
+      <div class="field" id="f-cargadores">
+        <div class="field-row">
+          <div class="field-ic">🔌</div>
+          <div class="field-text">
+            <div class="field-label">Cargadores instalados y funcionando</div>
+            <div class="field-sub">Entregadas a MM si no hay cartelas</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('cargadores','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('cargadores','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-cargadores">
+          <textarea rows="2" placeholder="¿Hemos comprado cable y solucionado o hay otro problema?"></textarea>
+        </div>
+      </div>
 
       <div class="field" id="f-relojes">
         <div class="field-row">
@@ -393,8 +417,8 @@
         <div class="field-row">
           <div class="field-ic">🏷️</div>
           <div class="field-text">
-            <div class="field-label">Cartelas rojas colocadas</div>
-            <div class="field-sub">O entregadas a MM si no había espacio</div>
+            <div class="field-label">Cartelas rojas colocadas y recortadas</div>
+            <div class="field-sub">Entregadas a MM si no hay cartelas</div>
           </div>
           <div class="yn-group">
             <button class="yn-btn si" onclick="yn('cartelas','si',this)">Sí</button>
@@ -430,6 +454,23 @@
     <div class="section-title">Cierre y evidencias</div>
     <div class="card">
 
+      <div class="field" id="f-entrega-mm">
+        <div class="field-row">
+          <div class="field-ic">📦</div>
+          <div class="field-text">
+            <div class="field-label">Hemos entregado a MM Relojes y mando Alarma</div>
+            <div class="field-sub">Entregado a MM Relojes y Mando</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('entregaMm','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('entregaMm','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-entregaMm">
+          <textarea rows="2" placeholder="¿Describe el problema y qué hemos hecho con los relojes y mando?"></textarea>
+        </div>
+      </div>
+
       <div class="field">
         <div class="field-row">
           <div class="field-ic">📶</div>
@@ -456,6 +497,9 @@
             <button class="yn-btn si" onclick="yn('albaran','si',this)">Sí</button>
             <button class="yn-btn no" onclick="yn('albaran','no',this)">No</button>
           </div>
+        </div>
+        <div class="inc-wrap" id="inc-albaran">
+          <textarea rows="2" placeholder="¿Ha firmado el responsable de MM el Albarán?"></textarea>
         </div>
       </div>
 
@@ -487,6 +531,9 @@
             <button class="yn-btn si" onclick="yn('herramientas','si',this)">Sí</button>
             <button class="yn-btn no" onclick="yn('herramientas','no',this)">No</button>
           </div>
+        </div>
+        <div class="inc-wrap" id="inc-herramientas">
+          <textarea rows="2" placeholder="¿Qué herramienta no encuentras?"></textarea>
         </div>
       </div>
 
@@ -526,14 +573,14 @@
   </div>
 
   <div class="footer-note">
-    Servicio de Campo · ICP · Campaña XPLORA Lineal Smartwatches MM · v2.0
+    Servicio de Campo · ICP · Campaña XPLORA Lineal Smartwatches MM · v3.0
   </div>
 
 </div>
 
 <script>
 const S = {};
-const TRACKED = ['acceso','posicion','antiguo','relojes','alarmas','cartel','cartelas','precios','albaran','fotos','herramientas'];
+const TRACKED = ['acceso','posicion','antiguo','cargadores','relojes','alarmas','cartel','cartelas','precios','entregaMm','albaran','fotos','herramientas'];
 
 function yn(key, val, btn) {
   S[key] = val;
@@ -546,15 +593,14 @@ function yn(key, val, btn) {
 }
 
 function updateProgress() {
-  const filled = TRACKED.filter(k => S[k]).length;
   const imei1 = document.getElementById('imei1').value.trim();
   const imei2 = document.getElementById('imei2').value.trim();
   const imeiDone = (imei1 || imei2) ? 1 : 0;
-  const total = TRACKED.length - 2; // acceso and herramientas don't count for required
+  const total = TRACKED.length + 1;
   const done = TRACKED.filter(k => S[k]).length + imeiDone;
-  const pct = Math.round(Math.min(done, 9) / 9 * 100);
+  const pct = Math.round(Math.min(done, total) / total * 100);
   document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-txt').textContent = Math.min(done,9) + ' de 9 completados';
+  document.getElementById('prog-txt').textContent = Math.min(done,total) + ' de ' + total + ' completados';
   document.getElementById('prog-pct').textContent = pct + '%';
 }
 
@@ -582,6 +628,7 @@ function note(incId, txtId) {
 }
 
 function generate() {
+  const os = document.getElementById('os').value.trim() || '(sin especificar)';
   const tienda = document.getElementById('tienda').value.trim() || '(sin especificar)';
   const gpv = document.getElementById('gpv').value.trim() || '(sin especificar)';
   const fecha = fmtDate(document.getElementById('fecha').value);
@@ -590,11 +637,12 @@ function generate() {
   const obs = getFieldText('obs');
 
   const hasNos = TRACKED.some(k => S[k] === 'no');
-  const allOk = ['relojes','alarmas','cartel','cartelas','albaran','fotos'].every(k => S[k] === 'si') && (imei1 || imei2);
+  const allOk = ['posicion','antiguo','cargadores','relojes','alarmas','cartel','cartelas','precios','entregaMm','albaran','fotos','herramientas'].every(k => S[k] === 'si') && (imei1 || imei2);
 
   let msg = '';
   msg += `*INFORME VISITA XPLORA* ⌚\n`;
   msg += `━━━━━━━━━━━━━━━━━━\n`;
+  msg += `📋 *OS:* ${os}\n`;
   msg += `🏪 *Tienda:* ${tienda}\n`;
   msg += `👤 *GPV:* ${gpv}\n`;
   msg += `📅 *Fecha:* ${fecha}\n`;
@@ -602,22 +650,24 @@ function generate() {
 
   msg += `*PASOS PREVIOS*\n`;
   msg += `${ic('acceso')} Responsable Telefonía localizado${note('inc-acceso')}\n`;
-  msg += `${ic('posicion')} Posición confirmada por MM${note('inc-posicion','txt-posicion')}\n`;
-  msg += `${ic('antiguo')} XPLORA antiguo gestionado${note('inc-antiguo','txt-antiguo')}\n\n`;
+  msg += `${ic('posicion')} Posición según planograma${note('inc-posicion','txt-posicion')}\n`;
+  msg += `${ic('antiguo')} Solo hay expuestos 2 relojes Xplora${note('inc-antiguo','txt-antiguo')}\n\n`;
 
   msg += `*INSTALACIÓN*\n`;
+  msg += `${ic('cargadores')} Cargadores instalados y funcionando${note('inc-cargadores')}\n`;
   msg += `${ic('relojes')} 2 relojes instalados en MENÚ${note('inc-relojes')}\n`;
   msg += `${ic('alarmas')} 2 alarmados OK (hebilla + carga)${note('inc-alarmas')}\n`;
   msg += `${ic('cartel')} Cartel PVC colocado y centrado${note('inc-cartel')}\n`;
-  msg += `${ic('cartelas')} Cartelas rojas OK${note('inc-cartelas')}\n`;
+  msg += `${ic('cartelas')} Cartelas rojas colocadas y recortadas${note('inc-cartelas')}\n`;
   msg += `${ic('precios')} Etiquetas de precio solicitadas${note('inc-precios')}\n\n`;
 
   msg += `*CIERRE*\n`;
+  msg += `${ic('entregaMm')} Entrega a MM de relojes y mando alarma${note('inc-entregaMm')}\n`;
   const imeiStr = [imei1, imei2].filter(Boolean).join(' / ');
   msg += `${imeiStr ? '✅' : '⬜'} IMEIs: ${imeiStr || 'pendiente'}\n`;
-  msg += `${ic('albaran')} Albarán firmado\n`;
+  msg += `${ic('albaran')} Albarán firmado${note('inc-albaran')}\n`;
   msg += `${ic('fotos')} Fotos y vídeo realizados${note('inc-fotos')}\n`;
-  msg += `${ic('herramientas')} Herramientas recogidas\n`;
+  msg += `${ic('herramientas')} Herramientas recogidas${note('inc-herramientas')}\n`;
 
   if (obs) {
     msg += `\n*OBSERVACIONES*\n${obs}\n`;
