@@ -241,7 +241,7 @@
 </div>
 <div class="progress-wrap">
   <div class="progress-row">
-    <span class="progress-label" id="prog-txt">0 de 14 completados</span>
+    <span class="progress-label" id="prog-txt">0 de 15 completados</span>
     <span class="progress-label" id="prog-pct">0%</span>
   </div>
   <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
@@ -325,8 +325,8 @@
         <div class="field-row">
           <div class="field-ic">🔄</div>
           <div class="field-text">
-            <div class="field-label">Solo hay expuestos 2 relojes Xplora</div>
-            <div class="field-sub">En caso de haber más, solicitar a MM retirarlos - Foto evidencia</div>
+            <div class="field-label">Hay Relojes Xplora expuestos</div>
+            <div class="field-sub">En caso de haber solicitar a MM retirarlos todos - Foto evidencia</div>
           </div>
           <div class="yn-group">
             <button class="yn-btn si" onclick="yn('antiguo','si',this)">Sí</button>
@@ -334,7 +334,7 @@
           </div>
         </div>
         <div class="inc-wrap" id="inc-antiguo">
-          <textarea rows="2" id="txt-antiguo" placeholder="¿Qué modelo había? ¿MM los ha retirado?"></textarea>
+          <textarea rows="2" id="txt-antiguo" placeholder="¿MM los ha retirado?"></textarea>
         </div>
       </div>
 
@@ -444,6 +444,23 @@
         </div>
         <div class="inc-wrap" id="inc-precios">
           <textarea rows="2" placeholder="¿Estaban pendientes? ¿Han dicho cuándo?"></textarea>
+        </div>
+      </div>
+
+      <div class="field" id="f-retirada-xplora">
+        <div class="field-row">
+          <div class="field-ic">🧹</div>
+          <div class="field-text">
+            <div class="field-label">MM ha retirado todos los relojes Xplora</div>
+            <div class="field-sub">Ya no hay relojes Xplora antiguos expuestos?</div>
+          </div>
+          <div class="yn-group">
+            <button class="yn-btn si" onclick="yn('retiradaXplora','si',this)">Sí</button>
+            <button class="yn-btn no" onclick="yn('retiradaXplora','no',this)">No</button>
+          </div>
+        </div>
+        <div class="inc-wrap" id="inc-retiradaXplora">
+          <textarea rows="2" placeholder="¿MM los ha retirado?"></textarea>
         </div>
       </div>
 
@@ -573,7 +590,7 @@
   </div>
 
   <div class="footer-note">
-    Servicio de Campo · ICP · Campaña XPLORA Lineal Smartwatches MM · v3.0
+    Servicio de Campo · ICP · Campaña XPLORA Lineal Smartwatches MM · v3.1
   </div>
 
 </div>
@@ -608,8 +625,8 @@ function buildPayload(msg, estadoFinal, totalChecks, totalOk, totalIncidencias, 
     incidenciaResponsableTelefonia: noteValue('inc-acceso'),
     posicionSegunPlanograma: S.posicion || '',
     incidenciaPosicionPlanograma: noteValue('inc-posicion'),
-    soloHay2RelojesXplora: S.antiguo || '',
-    incidenciaRelojesExpuestos: noteValue('inc-antiguo'),
+    hayRelojesXploraExpuestos: S.antiguo || '',
+    retiradaRelojesXploraExpuestos: noteValue('inc-antiguo'),
     cargadoresInstaladosFuncionando: S.cargadores || '',
     incidenciaCargadores: noteValue('inc-cargadores'),
     relojesInstaladosEncendidos: S.relojes || '',
@@ -622,6 +639,8 @@ function buildPayload(msg, estadoFinal, totalChecks, totalOk, totalIncidencias, 
     incidenciaCartelas: noteValue('inc-cartelas'),
     etiquetasPrecioSolicitadasMM: S.precios || '',
     incidenciaEtiquetasPrecio: noteValue('inc-precios'),
+    mmHaRetiradoTodosRelojesXplora: S.retiradaXplora || '',
+    incidenciaRetiradaXplora: noteValue('inc-retiradaXplora'),
     entregaMMRelojesMando: S.entregaMm || '',
     incidenciaEntregaMM: noteValue('inc-entregaMm'),
     imeiReloj1: val('imei1'),
@@ -661,7 +680,7 @@ async function saveToSheet(payload) {
   }
 }
 
-const TRACKED = ['acceso','posicion','antiguo','cargadores','relojes','alarmas','cartel','cartelas','precios','entregaMm','albaran','fotos','herramientas'];
+const TRACKED = ['acceso','posicion','antiguo','cargadores','relojes','alarmas','cartel','cartelas','precios','retiradaXplora','entregaMm','albaran','fotos','herramientas'];
 
 function yn(key, val, btn) {
   S[key] = val;
@@ -669,7 +688,7 @@ function yn(key, val, btn) {
   parent.querySelectorAll('.yn-btn').forEach(b => b.classList.remove('on'));
   btn.classList.add('on');
   const inc = document.getElementById('inc-'+key);
-  if (inc) inc.classList.toggle('show', val === 'no');
+  if (inc) inc.classList.toggle('show', key === 'antiguo' ? val === 'si' : val === 'no');
   updateProgress();
 }
 
@@ -718,7 +737,7 @@ function generate() {
   const obs = getFieldText('obs');
 
   const hasNos = TRACKED.some(k => S[k] === 'no');
-  const allOk = ['posicion','antiguo','cargadores','relojes','alarmas','cartel','cartelas','precios','entregaMm','albaran','fotos','herramientas'].every(k => S[k] === 'si') && (imei1 || imei2);
+  const allOk = ['posicion','antiguo','cargadores','relojes','alarmas','cartel','cartelas','precios','retiradaXplora','entregaMm','albaran','fotos','herramientas'].every(k => S[k] === 'si') && (imei1 || imei2);
 
   let msg = '';
   msg += `*INFORME VISITA XPLORA* ⌚\n`;
@@ -732,7 +751,7 @@ function generate() {
   msg += `*PASOS PREVIOS*\n`;
   msg += `${ic('acceso')} Responsable Telefonía localizado${note('inc-acceso')}\n`;
   msg += `${ic('posicion')} Posición según planograma${note('inc-posicion','txt-posicion')}\n`;
-  msg += `${ic('antiguo')} Solo hay expuestos 2 relojes Xplora${note('inc-antiguo','txt-antiguo')}\n\n`;
+  msg += `${ic('antiguo')} Hay Relojes Xplora expuestos${note('inc-antiguo','txt-antiguo')}\n\n`;
 
   msg += `*INSTALACIÓN*\n`;
   msg += `${ic('cargadores')} Cargadores instalados y funcionando${note('inc-cargadores')}\n`;
@@ -740,7 +759,7 @@ function generate() {
   msg += `${ic('alarmas')} 2 alarmados OK (hebilla + carga)${note('inc-alarmas')}\n`;
   msg += `${ic('cartel')} Cartel PVC colocado y centrado${note('inc-cartel')}\n`;
   msg += `${ic('cartelas')} Cartelas rojas colocadas y recortadas${note('inc-cartelas')}\n`;
-  msg += `${ic('precios')} Etiquetas de precio solicitadas${note('inc-precios')}\n\n`;
+  msg += `${ic('precios')} Etiquetas de precio solicitadas${note('inc-precios')}\n${ic('retiradaXplora')} MM ha retirado todos los relojes Xplora${note('inc-retiradaXplora')}\n\n`;
 
   msg += `*CIERRE*\n`;
   msg += `${ic('entregaMm')} Entrega a MM de relojes y mando alarma${note('inc-entregaMm')}\n`;
@@ -837,4 +856,3 @@ document.getElementById('fecha').valueAsDate = new Date();
 </script>
 </body>
 </html>
-V3 - Integración Google Sheets
