@@ -580,6 +580,87 @@
 
 <script>
 const S = {};
+
+const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycby4yMLYjHZ_DVNpEIZAXWwtB88OV8wKWKyRXQ736xr-IvAa5ES4_9zKdpaLUixNGcOC/exec";
+
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+function noteValue(incId) {
+  const wrap = document.getElementById(incId);
+  if (!wrap) return '';
+  const ta = wrap.querySelector('textarea');
+  return ta ? ta.value.trim() : '';
+}
+
+function buildPayload(msg, estadoFinal, totalChecks, totalOk, totalIncidencias, porcentajeCumplimiento) {
+  const now = new Date();
+  return {
+    fechaRegistro: now.toLocaleDateString('es-ES'),
+    horaRegistro: now.toLocaleTimeString('es-ES'),
+    os: val('os'),
+    tiendaMM: val('tienda'),
+    gpv: val('gpv'),
+    fechaVisita: fmtDate(val('fecha')),
+    responsableTelefoniaLocalizado: S.acceso || '',
+    incidenciaResponsableTelefonia: noteValue('inc-acceso'),
+    posicionSegunPlanograma: S.posicion || '',
+    incidenciaPosicionPlanograma: noteValue('inc-posicion'),
+    soloHay2RelojesXplora: S.antiguo || '',
+    incidenciaRelojesExpuestos: noteValue('inc-antiguo'),
+    cargadoresInstaladosFuncionando: S.cargadores || '',
+    incidenciaCargadores: noteValue('inc-cargadores'),
+    relojesInstaladosEncendidos: S.relojes || '',
+    incidenciaRelojesInstalados: noteValue('inc-relojes'),
+    alarmadosInstaladosCorrectamente: S.alarmas || '',
+    incidenciaAlarmas: noteValue('inc-alarmas'),
+    cartelPvcColocadoCentrado: S.cartel || '',
+    incidenciaCartelPvc: noteValue('inc-cartel'),
+    cartelasRojasColocadasRecortadas: S.cartelas || '',
+    incidenciaCartelas: noteValue('inc-cartelas'),
+    etiquetasPrecioSolicitadasMM: S.precios || '',
+    incidenciaEtiquetasPrecio: noteValue('inc-precios'),
+    entregaMMRelojesMando: S.entregaMm || '',
+    incidenciaEntregaMM: noteValue('inc-entregaMm'),
+    imeiReloj1: val('imei1'),
+    imeiReloj2: val('imei2'),
+    albaranFirmado: S.albaran || '',
+    incidenciaAlbaran: noteValue('inc-albaran'),
+    fotosVideoRealizados: S.fotos || '',
+    incidenciaFotos: noteValue('inc-fotos'),
+    herramientasRecogidas: S.herramientas || '',
+    incidenciaHerramientas: noteValue('inc-herramientas'),
+    observaciones: val('obs'),
+    totalChecks,
+    totalOk,
+    totalIncidencias,
+    estadoFinal,
+    porcentajeCumplimiento,
+    mensajeWhatsAppGenerado: msg
+  };
+}
+
+async function saveToSheet(payload) {
+  if (!SHEET_WEBAPP_URL || SHEET_WEBAPP_URL.includes('PON_AQUI')) {
+    console.warn('Falta configurar SHEET_WEBAPP_URL');
+    return false;
+  }
+  try {
+    await fetch(SHEET_WEBAPP_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    return true;
+  } catch (err) {
+    console.error('Error guardando en Google Sheets', err);
+    return false;
+  }
+}
+
 const TRACKED = ['acceso','posicion','antiguo','cargadores','relojes','alarmas','cartel','cartelas','precios','entregaMm','albaran','fotos','herramientas'];
 
 function yn(key, val, btn) {
@@ -674,13 +755,24 @@ function generate() {
   }
 
   msg += `\n━━━━━━━━━━━━━━━━━━\n`;
+  let estadoFinal = '';
   if (allOk && !hasNos) {
+    estadoFinal = 'VISITA COMPLETADA SIN INCIDENCIAS';
     msg += `✅ *VISITA COMPLETADA SIN INCIDENCIAS*`;
   } else if (hasNos) {
+    estadoFinal = 'VISITA CON INCIDENCIAS';
     msg += `⚠️ *VISITA CON INCIDENCIAS — revisar arriba*`;
   } else {
+    estadoFinal = 'VISITA INCOMPLETA';
     msg += `⬜ *VISITA INCOMPLETA — faltan datos*`;
   }
+
+  const totalChecks = TRACKED.length + 1;
+  const totalOk = TRACKED.filter(k => S[k] === 'si').length + ((imei1 || imei2) ? 1 : 0);
+  const totalIncidencias = TRACKED.filter(k => S[k] === 'no').length;
+  const porcentajeCumplimiento = Math.round((totalOk / totalChecks) * 100) + '%';
+  const payload = buildPayload(msg, estadoFinal, totalChecks, totalOk, totalIncidencias, porcentajeCumplimiento);
+  saveToSheet(payload);
 
   document.getElementById('output-txt').textContent = msg;
 
@@ -745,3 +837,4 @@ document.getElementById('fecha').valueAsDate = new Date();
 </script>
 </body>
 </html>
+V3 - Integración Google Sheets
